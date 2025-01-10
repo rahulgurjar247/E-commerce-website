@@ -3,6 +3,7 @@ import  mongoose from "mongoose"
 import  cors from "cors"
 import  bodyParser from "body-parser"
 import dotenv from "dotenv"
+import router from "./routes/userRoutes.js"
 dotenv.config()
 
 const app = express();
@@ -12,7 +13,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+app.use('/api', router);
+mongoose.connect(`${process.env.MONGO_URL}/Backend`, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection failed:', err));
 
