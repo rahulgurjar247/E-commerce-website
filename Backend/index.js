@@ -4,6 +4,7 @@ import  cors from "cors"
 import  bodyParser from "body-parser"
 import dotenv from "dotenv"
 import router from "./routes/userRoutes.js"
+import productRouter from "./routes/productRoutes.js"
 dotenv.config()
 
 const app = express();
@@ -14,6 +15,8 @@ app.use(bodyParser.json());
 
 
 app.use('/api', router);
+app.use('/api', productRouter);
+
 mongoose.connect(`${process.env.MONGO_URL}/Backend`, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection failed:', err));
