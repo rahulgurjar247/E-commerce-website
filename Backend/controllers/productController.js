@@ -1,4 +1,5 @@
 import { Product } from '../models/Product.js';
+import User from '../models/User.js';
 
 
 
@@ -47,4 +48,30 @@ export const addProduct = async (req, res) => {
     }
 };
 
+export const buyProduct = async (req, res) => {
+    console.log('buyProduct');
+    try {
+        const { productId, userId } = req.params;
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ msg: 'Product not found' });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ msg: 'You are not valid user' });
+        }
+        product.buyer.push = userId;
+        await product.save();
+        res.status(200).json({ msg: 'Product bought successfully' });
+
+
+    } catch (error) {
+        console.error('Error buying product:', error);
+        res.status(500).json({
+            error: 'An error occurred while buying the product. Please try again later.',
+        });
+
+    }
+}
 

@@ -30,7 +30,11 @@ const productSchema = new mongoose.Schema({
     description: {
         type: String,
     },
-    reviews: [reviewSchema]
+    reviews: [reviewSchema],
+    buyer : [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 })
 
 const Review = mongoose.model('Review', reviewSchema);
