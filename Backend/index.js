@@ -5,6 +5,7 @@ import  bodyParser from "body-parser"
 import dotenv from "dotenv"
 import router from "./routes/userRoutes.js"
 import productRouter from "./routes/productRoutes.js"
+import reviewRouter from "./routes/reviewRoutes.js"
 dotenv.config()
 
 const app = express();
@@ -16,6 +17,8 @@ app.use(bodyParser.json());
 
 app.use('/api', router);
 app.use('/api', productRouter);
+app.use('/api', reviewRouter);
+
 
 mongoose.connect(`${process.env.MONGO_URL}/Backend`, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
