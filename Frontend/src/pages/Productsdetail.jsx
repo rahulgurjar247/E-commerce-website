@@ -12,6 +12,7 @@ export const ProductDetail = () => {
         axios.get(`http://localhost:5000/api/get_product/${id}`)
             .then(response => {
                 setProduct(response.data.data);
+                setReviews(response.data.data.reviews);
             })
 
             .catch(error => console.error(error));
@@ -27,8 +28,11 @@ export const ProductDetail = () => {
 
         try {
             const response = await axios.post(
-                `http://localhost:5000/api/product/${id}/review`,
-                { review },
+                `http://localhost:5000/api/add_review/${id}`,
+                {
+                    comment : review,
+                    userId : localStorage.getItem('user_id')
+                 },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setReviews([...reviews, response.data.review]); 
@@ -47,18 +51,18 @@ export const ProductDetail = () => {
                 <p className="text-gray-600">{product.description}</p>
                 <p className="text-lg font-bold mt-4">Price: ${product.price}</p>
 
-                {/* <div className="mt-6">
+                <div className="mt-6">
                     <h2 className="text-2xl font-semibold mb-4">Reviews</h2>
                     <ul>
                         {reviews.map((r, index) => (
                             <li key={index} className="border-b py-2">
-                                {r}
+                                {r?.comment}
                             </li>
                         ))}
                     </ul>
-                </div> */}
+                </div>
 
-                {/* <div className="mt-6">
+                <div className="mt-6">
                     <textarea
                         value={review}
                         onChange={(e) => setReview(e.target.value)}
@@ -71,7 +75,7 @@ export const ProductDetail = () => {
                     >
                         Submit Review
                     </button>
-                </div> */}
+                </div>
             </div>
         </div>
     );

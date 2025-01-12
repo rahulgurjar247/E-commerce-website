@@ -20,6 +20,7 @@ export const Home = () => {
         }
         alert(`You have bought product ${productId}`);
     };
+    console.log(products)
 
     return (
         <div className="min-h-screen bg-gray-100 p-6">
@@ -32,6 +33,7 @@ export const Home = () => {
                         className="bg-white shadow-md rounded-lg overflow-hidden transform transition duration-300 hover:scale-105"
                     >
                         <div className="p-4">
+                            <img src={product.image} alt="" className="w-full h-40" />
                             <h3 className="text-xl font-semibold text-gray-800">{product.name}</h3>
                             <p className="text-gray-600 mt-2">{product.description}</p>
                             <p className="text-lg font-bold text-gray-900 mt-4">Price: ${product.price}</p>
