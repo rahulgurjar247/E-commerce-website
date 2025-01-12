@@ -9,7 +9,7 @@ const productRouter = express.Router();
 productRouter.get('/get_product', getProducts);
 productRouter.post('/add_product', upload.single('image'),addProduct);
 productRouter.post('/buy_product/:userId/:productId', buyProduct);
-productRouter.get('/get_product/:productId', getProductdetail);
+productRouter.get('/get_product/:productId/:userId', getProductdetail);
 
 
 export default productRouter;

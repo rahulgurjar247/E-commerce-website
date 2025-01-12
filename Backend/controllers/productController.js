@@ -16,37 +16,51 @@ const s3 = new S3Client({
     region: process.env.AWS_REGION
  });
 
-export const getProducts = async (req, res) => {
+ export const getProducts = async (req, res) => {
     try {
+        const userId = req.query.userId;
         const products = await Product.find();
+        console.log(userId)
 
         if (products.length === 0) {
             return res.status(404).json({ message: 'No products found' });
         }
 
-        const productsWithUrls = await Promise.all(products.map(async (product) => {
-            if(!product.image){
-                return product;
-            }
-            const key = product.image.replace('https://my-ecommerce-rahul.s3.ap-south-1.amazonaws.com/', '');
-            const command = new GetObjectCommand({
-                Bucket: process.env.BUCKET_NAME,
-                Key: key,  
-            });
+        const productsWithUrls = await Promise.all(
+            products.map(async (product) => {
+                const productData = {
+                    _id: product._id,
+                    name: product.name,
+                    price: product.price,
+                    description: product.description,
+                }
+                productData.isBuyer = product.buyer.includes(userId);
 
-            const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+                if (!product.image) {
+                    return productData;
+                }
 
-            product.image = presignedUrl;
-            return product;
-        }));
+                const key = product.image.replace('https://my-ecommerce-rahul.s3.ap-south-1.amazonaws.com/', '');
+                const command = new GetObjectCommand({
+                    Bucket: process.env.BUCKET_NAME,
+                    Key: key,
+                });
+
+                const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+                productData.image = presignedUrl;
+
+                return productData;
+            })
+        );
 
         res.status(200).json(productsWithUrls);
 
     } catch (error) {
-        console.error(error);
+        console.error('Error while fetching products:', error);
         res.status(500).json({ error: 'Error while fetching products' });
     }
 };
+
 
 
 export const addProduct = async (req, res) => {
@@ -91,7 +105,6 @@ export const addProduct = async (req, res) => {
 };
 
 export const buyProduct = async (req, res) => {
-    console.log('buyProduct');
     try {
         const { productId, userId } = req.params;
         const product = await Product.findById(productId);
@@ -103,7 +116,7 @@ export const buyProduct = async (req, res) => {
         if (!user) {
             return res.status(404).json({ msg: 'You are not valid user' });
         }
-        product.buyer.push = userId;
+        product.buyer.push(userId);
         await product.save();
         res.status(200).json({ msg: 'Product bought successfully' });
 
@@ -119,7 +132,7 @@ export const buyProduct = async (req, res) => {
 
 export const getProductdetail = async (req, res) => {
     try {
-        const { productId } = req.params;
+        const { productId,userId } = req.params;
         const product = await Product.findById(productId)
             .populate({
                 path: 'reviews.userId',
@@ -128,8 +141,16 @@ export const getProductdetail = async (req, res) => {
         if (!product) {
             return res.status(404).json({ msg: 'Product not found' });
         }
+        const responseData = {
+            _id: product._id,
+            name: product.name,
+            price: product.price,
+            description: product.description,
+            reviews: product.reviews,
+            isBuyer: product.buyer.includes(userId),
+        }
         res.status(200).json({
-            data: product,
+            data: responseData,
             msg: 'Product details fetched successfully',
             succeed: true
         });
