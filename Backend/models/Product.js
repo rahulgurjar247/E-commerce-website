@@ -30,6 +30,10 @@ const productSchema = new mongoose.Schema({
     description: {
         type: String,
     },
+    image: {
+        type: String,
+        required: true
+    },
     reviews: [reviewSchema],
     buyer : [{
         type: mongoose.Schema.Types.ObjectId,
