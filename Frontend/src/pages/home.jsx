@@ -6,14 +6,18 @@ export const Home = () => {
     const [userId, setUserId] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
+    useEffect(()=>{
         const user_id = localStorage.getItem('user_id');
-        console.log(user_id);
-        setUserId(user_id);
+        if(user_id){
+            setUserId(user_id);
+        }
+    },[])
+    useEffect(() => {
+        
         axios.get(`http://localhost:5000/api/get_product?userId=${userId}`)
             .then(response => setProducts(response.data))
             .catch(error => console.error(error));
-    }, []);
+    }, [userId]);
 
     const handleBuy = (productId) => {
         const token = localStorage.getItem('authToken');

@@ -9,7 +9,7 @@ export const uploadToS3 = async (fileBuffer, fileName) => {
             Bucket: process.env.BUCKET_NAME,  // Your S3 bucket name
             Key: fileName,                    // The file name in S3
             Body: fileBuffer,                 // The file buffer
-            ACL: 'public-read',               // Set the file to be publicly readable
+            // ACL: 'public-read',               // Set the file to be publicly readable
         };
 
         const upload = new Upload({

@@ -66,6 +66,8 @@ const s3 = new S3Client({
 export const addProduct = async (req, res) => {
     try {
         const { name, price, description } = req.body;
+        console.log(req.body)
+        console.log(name, price, description);
 
         if (!name || !price || !description) {
             return res.status(400).json({ error: 'Name, price, and description are required' });
