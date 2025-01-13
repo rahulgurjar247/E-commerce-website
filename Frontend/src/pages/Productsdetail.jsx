@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export const ProductDetail = () => {
-    const { id } = useParams(); 
+    const { id,userId } = useParams(); 
     const [product, setProduct] = useState(null);
     const [review, setReview] = useState("");
     const [reviews, setReviews] = useState([]);
 
     useEffect(() => {
-        axios.get(`http://localhost:5000/api/get_product/${id}`)
+        axios.get(`http://localhost:5000/api/get_product/${id}/${userId}`)
             .then(response => {
                 setProduct(response.data.data);
                 setReviews(response.data.data.reviews);
@@ -62,7 +62,7 @@ export const ProductDetail = () => {
                     </ul>
                 </div>
 
-                <div className="mt-6">
+               { product.isBuyer && <div className="mt-6">
                     <textarea
                         value={review}
                         onChange={(e) => setReview(e.target.value)}
@@ -75,7 +75,7 @@ export const ProductDetail = () => {
                     >
                         Submit Review
                     </button>
-                </div>
+                </div>}
             </div>
         </div>
     );

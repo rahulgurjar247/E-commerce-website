@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import "../index.css"
 
 const Navbar = () => {
@@ -9,6 +9,7 @@ const Navbar = () => {
         const token = localStorage.getItem('authToken')
         setIsAuthenticated(token);
     }, []);
+    const navigate = useNavigate()
 
     const signOut = () => {
         localStorage.removeItem('authToken');
@@ -37,11 +38,15 @@ const Navbar = () => {
                 </Link>
             </div>}
             {
-                isAuthenticated && <div className='px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition duration-200'
+                isAuthenticated &&
+                <>
+                <button onClick={() => navigate("/add-item")}>Add item</button>
+                <div className='px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition duration-200'
                     onClick={() => {signOut();}}
                 >
                     signOut
                 </div>
+                </>
             }
         </nav>
     );
